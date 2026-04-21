@@ -89,6 +89,7 @@ def get_entries():
     schema = PaginationQuerySchema()
     try:
         params = schema.load(request.args)
+        #Error for unprocessable concent., raised as an exception.
     except ValidationError as exc:
         return make_response({"errors": exc.messages}, 422)
 
@@ -96,7 +97,7 @@ def get_entries():
     query = JournalEntry.query.filter_by(user_id=user.id)
 
     if params.get("search"):
-        pattern = f"%{params['search']}%"
+        pattern = f"%{params['search']}"
         query = query.filter(
             db.or_(
                 JournalEntry.title.ilike(pattern),
