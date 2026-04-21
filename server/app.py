@@ -1,7 +1,7 @@
 # Dependencies
 from flask import Flask, request, session, make_response
-from models import User, db
-from schemas import SignupSchema, LoginSchema
+from models import User, db, JournalEntry
+from schemas import JournalEntryCreateSchema,JournalEntryUpdateSchema,LoginSchema,PaginationQuerySchema,SignupSchema
 from marshmallow import ValidationError
 from flask_migrate import Migrate
 
@@ -12,6 +12,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 migrate = Migrate(app, db)
+
+# Session retrieval
+def current_user():
+    return db.session.get(User, session.get("user_id"))
 
 # Routes go here.
 # /login route with POST
@@ -75,6 +79,27 @@ def logout():
 
 
 
+# Journal entries
+  @app.route('/entries', methods=['POST'])
+def create_entry():
+    # Function for creating journal entries.
+    pass
+
+  @app.route('/entries/<int:entry_id>', methods=['GET'])
+ def get_entry(entry_id):
+    # Function for retrieving a journal based on id.
+    pass
+
+@app.route('/entries/<int:entry_id>', methods=['PATCH'])
+  def update_entry(entry_id):
+    # Function for updating journal entry.
+    pass
+
+@app.route('/entries/<int:entry_id>', methods=['DELETE'])
+def delete_entry(entry_id):
+    # Function for deleting a journal entry.
+    pass
+   
 if __name__ == '__main__':
     app.run(debug=True, port=5555)
     # App should run on port 5555.
