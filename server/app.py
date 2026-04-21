@@ -10,10 +10,25 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Routes go here.
 
 # /login route with POST
-# /signup route with POST
-# /check_session with GET
-# /logout with DELETE
+@app.route('/login', methods=['POST'])
+def login():
+    pass
 
-if __name__ == "__main__":
+# /signup route with POST
+@app.route('/signup', methods=['POST'])
+def signup():
+
+
+# /check_session with GET
+@app.route('/check_session', methods=['GET'])
+def check_session():
+
+
+# /logout with DELETE
+@app.route('/check_session', methods=['DELETE'])
+def logout():
+
+
+if __name__ == '__main__':
     app.run(debug=True, port=5555)
     # App should run on port 5555.
