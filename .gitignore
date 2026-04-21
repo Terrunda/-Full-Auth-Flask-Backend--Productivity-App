@@ -1,0 +1,4 @@
+.venv
+DETAILS.md
+migrations/
+instance/
