@@ -13,7 +13,6 @@ sample_tags = [
 
 def seed():
     with app.app_context():
-        print("Clearing existing data...")
         JournalEntry.query.delete()
         User.query.delete()
         db.session.commit()
@@ -51,12 +50,6 @@ def seed():
                 db.session.add(new_entry)
 
         db.session.commit()
-
-        print("\nDone! Seeded:")
-        print(f"  {len(users)} users, 20 journal entries each ({len(users) * 20} total)")
-        print("\nCredentials (username / password):")
-        for user in users:
-            print(f"  {user.username} / Password123!")
 
 
 if __name__ == "__main__":

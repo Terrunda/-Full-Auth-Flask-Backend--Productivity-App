@@ -1,14 +1,13 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
 from sqlalchemy.orm import validates
 from sqlalchemy import MetaData
-
-from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
-
-# Relationship will be a one-to-many where one user can have multiple journals.
 
 metadata = MetaData()
 db = SQLAlchemy(metadata=metadata)
+bcrypt = Bcrypt()
+
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -18,35 +17,34 @@ class User(db.Model):
     email = db.Column(db.String, unique=True, nullable=False)
     password_hash = db.Column(db.String, nullable=False)
     date_of_creation = db.Column(db.DateTime, default=datetime.today(), nullable=False)
-    
-    entries = db.relationship("JournalEntry",back_populates="author")
-    
-    # Changed from werkzeug to bcrypt for hashing passwords
+
+    entries = db.relationship("JournalEntry", back_populates="author")
+
     def set_password(self, password: str) -> None:
-        """Hash and store the user's password using Werkzeug's pbkdf2 hashing."""
-        self.password_hash = generate_password_hash(password)
- 
+        """Hash and store the user's password using bcrypt."""
+        self.password_hash = bcrypt.generate_password_hash(password).decode("utf-8")
+
     def check_password(self, password: str) -> bool:
-        """Verify a plain-text password against the stored hash."""
-        return check_password_hash(self.password_hash, password)
-    
+        """Verify a plain-text password against the stored bcrypt hash."""
+        return bcrypt.check_password_hash(self.password_hash, password)
+
     @validates("username")
     def validate_username(self, key, username):
         if not (3 <= len(username) <= 20):
             raise ValueError("Username must be between 3 and 20 characters.")
         return username
-    
+
+
 class JournalEntry(db.Model):
     __tablename__ = "journal_entries"
-    
+
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
+    title = db.Column(db.String(, nullable=False)
     content = db.Column(db.Text, nullable=False)
-    tags = db.Column(db.String(500), nullable=True)  
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False) # Foreign key that links to the Users table.
+    tags = db.Column(db.String, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     journal_creation_date = db.Column(db.DateTime, default=datetime.today(), nullable=False)
 
-    #One to many relation.
     author = db.relationship("User", back_populates="entries")
 
     @validates("title")
