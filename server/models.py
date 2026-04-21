@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import validates
 from sqlalchemy import MetaData
 
-import bcrypt
+from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 
 # Relationship will be a one-to-many where one user can have multiple journals.
@@ -23,23 +23,19 @@ class User(db.Model):
     
     # Changed from werkzeug to bcrypt for hashing passwords
     def set_password(self, password: str) -> None:
-        byte_password = password.encode('utf-8')
-        salt = bcrypt.gensalt()
-        hashed_password = bcrypt.hashpw(byte_password, salt)
-        
-        self.password_hash = hashed_password.decode('utf-8')
-
+        """Hash and store the user's password using Werkzeug's pbkdf2 hashing."""
+        self.password_hash = generate_password_hash(password)
+ 
     def check_password(self, password: str) -> bool:
-        byte_password = password.encode('utf-8')
-        byte_hash = self.password_hash.encode('utf-8')
-        
-        return bcrypt.checkpw(byte_password, byte_hash)
+        """Verify a plain-text password against the stored hash."""
+        return check_password_hash(self.password_hash, password)
     
     @validates("username")
     def validate_username(self, key, username):
         if not (3 <= len(username) <= 20):
             raise ValueError("Username must be between 3 and 20 characters.")
-
+        return username
+    
 class JournalEntry(db.Model):
     __tablename__ = "journal_entries"
     
@@ -47,7 +43,7 @@ class JournalEntry(db.Model):
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
     tags = db.Column(db.String(500), nullable=True)  
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False) # Foreign key that links to the Users table.
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False) # Foreign key that links to the Users table.
     journal_creation_date = db.Column(db.DateTime, default=datetime.today(), nullable=False)
 
     #One to many relation.
