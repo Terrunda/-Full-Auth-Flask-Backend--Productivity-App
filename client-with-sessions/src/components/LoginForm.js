@@ -22,7 +22,15 @@ function LoginForm({ onLogin }) {
       if (r.ok) {
         r.json().then((user) => onLogin(user));
       } else {
-        r.json().then((err) => setErrors(err.errors));
+        r.json().then((err) => {
+        if (err.errors) {
+          setErrors(err.errors);
+        } else if (err.error) {
+          setErrors([err.error]);
+        } else {
+          setErrors(["Something went wrong."]);
+  }
+});
       }
     });
   }
