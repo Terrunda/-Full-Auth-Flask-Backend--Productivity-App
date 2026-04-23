@@ -14,7 +14,7 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False)
-    email = db.Column(db.String, unique=True, nullable=False)
+    email = db.Column(db.String, unique=True, nullable=True)
     password_hash = db.Column(db.String, nullable=False)
     date_of_creation = db.Column(db.DateTime, default=datetime.today(), nullable=False)
 
@@ -39,7 +39,7 @@ class JournalEntry(db.Model):
     __tablename__ = "journal_entries"
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(, nullable=False)
+    title = db.Column(db.String, nullable=False)
     content = db.Column(db.Text, nullable=False)
     tags = db.Column(db.String, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)

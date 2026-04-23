@@ -37,6 +37,12 @@ pipenv shell
 ```
 
 ### 2. Set up the database
+
+Switch to the server directory using the command:
+```bash
+cd server
+```
+
 ```bash
 flask db init
 flask db migrate -m "initial migration"
@@ -44,6 +50,7 @@ flask db upgrade
 ```
 
 ### 3. Seed the database
+**Optional: **
 ```bash
 python seed.py
 ```
@@ -57,6 +64,17 @@ flask run
 in the terminal.
 
 Once the Flask app is running, you can check the routes defined to view the data stored.
+### 4. View the frontend
+Switch to the directory `client-with-sessions`
+```bash
+cd client-with-sessions
+```
+
+After switching, install the necessary dependencies from which you can view the frontend.
+```bash
+npm install
+npm start
+```
 ---
 
 ## List of all endpoints
